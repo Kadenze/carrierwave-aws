@@ -32,7 +32,9 @@ module CarrierWave
       end
 
       def credentials
-        [uploader.aws_credentials].compact
+        creds = uploader.aws_credentials
+        creds.each {|k, v| creds[k] = v.respond_to?(:call) ? v.call : v}
+        [creds].compact
       end
     end
   end
