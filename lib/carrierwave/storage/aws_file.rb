@@ -52,7 +52,12 @@ module CarrierWave
       end
 
       def signed_url(options = {})
-        signer.call(public_url, options)
+        # Hacky quick way to append query strings to cloudfront URLs
+        url = public_url
+        if options[:query].present?
+          url = url + "?#{options[:query]}"
+        end
+        signer.call(url, options)
       end
 
       def authenticated_url(options = {})
