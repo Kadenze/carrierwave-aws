@@ -52,10 +52,11 @@ module CarrierWave
       end
 
       def signed_url(options = {})
-        # Hacky quick way to append query strings to cloudfront URLs
+        # append query strings to cloudfront URLs
         url = public_url
-        if options[:query].present?
-          url = url + "?#{options[:query]}"
+        if options.present?
+          opts = aws_options.cloudfront_options(options)
+          url = url + "?#{CGI.unescape(opts.to_query)}"
         end
         signer.call(url, options)
       end

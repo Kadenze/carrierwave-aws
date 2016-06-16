@@ -27,6 +27,14 @@ module CarrierWave
         { expires_in: uploader_expiration }.merge(options)
       end
 
+      def cloudfront_options(options={})
+        opts = {}
+        options.each_pair do |key, val|
+          opts[key.to_s.gsub(/_/, '-')] = val
+        end
+        opts
+      end
+
       private
 
       def aws_attributes
