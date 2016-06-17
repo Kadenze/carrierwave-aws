@@ -42,17 +42,14 @@ module CarrierWave
       end
 
       def connection
-        @connection ||= begin
-          conn_cache = self.class.connection_cache
-
-          conn_cache[credentials] ||= ::Aws::S3::Resource.new(*credentials)
-        end
+        @connection = ::Aws::S3::Resource.new(*credentials)
       end
 
       def credentials
         creds = uploader.aws_credentials
-        creds.each {|k, v| creds[k] = v.respond_to?(:call) ? v.call : v}
-        [creds].compact
+        new_creds = {}
+        creds.each {|k, v| new_creds[k] = v.respond_to?(:call) ? v.call : v}
+        [new_creds].compact
       end
     end
   end
